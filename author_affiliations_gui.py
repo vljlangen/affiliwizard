@@ -142,17 +142,16 @@ class AuthorAffiliationsApp:
         root.title("Author Affiliations File Creator")
         usage_text = (
             "How to use:\n\n"
-
             "1. Paste your author-affiliation data from Excel to the text box below.\n"
             "2. Then use the buttons below to export author-affiliation data to .docx, .html, or .txt\n\n"
-
             "Format instructions for the Excel file:\n\n"
-            "- Each line: Author Name [tab] Affiliation 1 [tab] Affiliation 2 ...\n"
+            "- Each line: Author Name [tab] Affiliation 1 [tab] Affiliation 2 ...\n\n"
             "- Practical example:\n\n"
-            "John Doe\tBogus Institute, CA, USA\tExample Institute, TS, USA\n\n"
-
-            "Download an Excel example file below if needed.\n\n"           
-
+            "John Doe\tBogus Institute, CA, USA\tExample Institute, TS, USA\n\n\n\n"
+            "Download an Excel example file below if needed.\n\n"
+            "\nLicense:"
+            "\nMIT License, Copyright (c) 2025 Ville Langén.\n"
+            "(TLDR: MIT License means you can use this freely. Just credit me and don’t sue me.)"
         )
         self.usage_label = tk.Label(root, text=usage_text, justify="left", anchor="w", fg="blue")
         self.usage_label.pack(padx=10, pady=(10,0), anchor="w")
@@ -166,6 +165,8 @@ class AuthorAffiliationsApp:
         self.create_txt_btn.pack(pady=5)
         self.example_excel_btn = tk.Button(root, text="Download Example Excel File", command=self.download_example_excel)
         self.example_excel_btn.pack(pady=5)
+        self.quit_btn = tk.Button(root, text="Quit", command=root.quit, fg="red")
+        self.quit_btn.pack(pady=(20,10))
 
     def process(self):
         raw_text = self.text.get("1.0", tk.END)
