@@ -49,11 +49,14 @@
             <script type="py">
                 from js import document
 
-                def greet(event=None):
-                    name = document.getElementById("name").value
-                    document.getElementById("output").innerText = f"Hello, {name}!"
+                # def greet(event=None):
+                #     name = document.getElementById("name").value
+                #     document.getElementById("output").innerText = f"Hello, {name}!"
 
-                document.getElementById("greet-btn").addEventListener("click", greet)
+                # document.getElementById("greet-btn").addEventListener("click", greet)
+
+                # Just show Hello, World! in the output div
+                document.getElementById("output").innerText = "Hello, World!"
             </script>
         </section>
     </body>
