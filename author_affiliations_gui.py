@@ -139,24 +139,24 @@ def create_new_txt(txt_path, author_affils, affil_list, affil_map):
 class AuthorAffiliationsApp:
     def __init__(self, root):
         self.root = root
-        root.title("AffiliWizard")
+        root.title("AffiliWizard v1.0.0")
         usage_text = (
             "How to use:\n\n"
             "1. Paste your author-affiliation data from Excel to the text box below.\n"
             "2. Then use the buttons below to export author-affiliation data to .docx, .html, or .txt\n\n"
-            "Format instructions for the Excel file:\n\n"
-            "- Each line: Author Name [tab] Affiliation 1 [tab] Affiliation 2 ...\n\n"
-            "- Example line for Excel:\n\n"
+            "Format instructions for the Excel file:\n"
+            "- Each line: Author Name [tab] Affiliation 1 [tab] Affiliation 2 ...\n"
+            "- Example line for Excel:\n"
             "┌────────┬─────────────┬───────────────┐\n"
             "   John Doe, MD          Bogus Institute, CA, USA         Example Institute, TS, USA \n"
-            "└────────┴─────────────┴───────────────┘\n\n\n"
-            "(Download an Excel example file below if needed.)\n\n\n"
+            "└────────┴─────────────┴───────────────┘\n"
+            "Download an Excel example file below if needed.\n\n"
 
             "Source code: https://github.com/vljlangen/affiliwizard\n"
 
             "\nLicense:"
             "\nMIT License, Copyright (c) 2025 Ville Langén.\n"
-            "(TLDR: MIT License means you can use this freely. Just credit me and don't sue me.)\n\n\n\n"
+            "TLDR: MIT License means you can use this freely. Just credit me and don't sue me.\n\n"
 
             "Paste your author-affiliation data from Excel to the text box below:"
 
