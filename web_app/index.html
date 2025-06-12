@@ -47,16 +47,16 @@
             <button id="greet-btn">Greet</button>
             <div id="output"></div>
             <script type="py">
-                from js import document
+from js import document
 
-                # def greet(event=None):
-                #     name = document.getElementById("name").value
-                #     document.getElementById("output").innerText = f"Hello, {name}!"
+def greet(event=None):
+    name = document.getElementById("name").value
+    if name.strip():
+        document.getElementById("output").innerText = f"Hello, {name}!"
+    else:
+        document.getElementById("output").innerText = "Hello, World!"
 
-                # document.getElementById("greet-btn").addEventListener("click", greet)
-
-                # Just show Hello, World! in the output div
-                document.getElementById("output").innerText = "Hello, World!"
+document.getElementById("greet-btn").addEventListener("click", greet)
             </script>
         </section>
     </body>
