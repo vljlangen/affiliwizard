@@ -50,22 +50,14 @@
         <!-- will be set via PyDom -->
         <div id="page-message"></div>
 
-        <div id="pandas-source">
-            <h3>Data Source</h3>
-            <input type="text" id="txt-url" class="py-input" size="70" />
-            <button
-                type="submit"
-                id="btn-load"
-                class="py-button"
-                py-click="loadFromURL"
-            >
-                Load CSV
-            </button>
+        <div id="author-input-section">
+            <h3>Paste Author Info</h3>
+            <textarea id="author-info" rows="6" cols="70" placeholder="Paste your author-affiliation data here..."></textarea><br>
+            <button id="process-btn">Process Author Info</button>
         </div>
-
-        <div id="pandas-output" hidden>
+        <div id="author-output-section">
             <h3>Output</h3>
-            <div id="pandas-output-inner"></div>
+            <div id="author-output"></div>
         </div>
 
         <div id="pandas-dev-console" hidden>

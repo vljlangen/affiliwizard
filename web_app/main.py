@@ -30,3 +30,9 @@ def loadFromURL(event):
     pydom["div#pandas-dev-console"].style["display"] = "block"
 
     display(df, target="pandas-output-inner", append="False")
+
+def process_author_info(event=None):
+    author_info = pydom["textarea#author-info"][0].value
+    pydom["div#author-output"].html = f"<pre>{author_info}</pre>"
+
+pydom["button#process-btn"].on("click", process_author_info)
