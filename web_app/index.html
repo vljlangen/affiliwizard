@@ -1,32 +1,81 @@
-import pandas as pd
-from pyweb import pydom
-from pyodide.http import open_url
-from pyscript import display
-from js import console
+<!doctype html>
 
-title = "Pandas (and basic DOM manipulation)"
-page_message = "This example loads a remote CSV file into a Pandas dataframe, and displays it."
-url = "https://raw.githubusercontent.com/datasets/airport-codes/master/data/airport-codes.csv"
+<html>
+    <head>
+        <!-- Recommended meta tags -->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-pydom["title#header-title"].html = title
-pydom["a#page-title"].html = title
-pydom["div#page-message"].html = page_message
-pydom["input#txt-url"][0].value = url
+        <!-- PyScript CSS -->
+        <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+        <!-- CSS for examples -->
+        <link rel="stylesheet" href="./assets/css/examples.css" />
 
-def log(message):
-    # log to pandas dev console
-    print(message)
-    # log to JS console
-    console.log(message)
+        <!-- This script tag bootstraps PyScript -->
+        <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
 
-def loadFromURL(event):
-    pydom["div#pandas-output-inner"].html = ""
-    url = pydom["input#txt-url"][0].value
+        <!-- for splashscreen -->
+        <style>
+            #loading { outline: none; border: none; background: transparent }
+        </style>
+        <script type="module">
+            const loading = document.getElementById('loading');
+            addEventListener('py:ready', () => loading.close());
+            loading.showModal();
+        </script>
 
-    log(f"Trying to fetch CSV from {url}")
-    df = pd.read_csv(open_url(url))
+        <!-- will be set via PyDom -->
+        <title id="header-title"></title>
+        <link rel="icon" type="image/png" href="./assets/favicon.png" />
+    </head>
 
-    pydom["div#pandas-output"].style["display"] = "block"
-    pydom["div#pandas-dev-console"].style["display"] = "block"
+    <body>
+        <dialog id="loading">
+            <h1>Loading...</h1>
+        </dialog>
 
-    display(df, target="pandas-output-inner", append="False")
+        <nav class="navbar" style="background-color: #000000">
+            <div class="app-header">
+                <a href="/">
+                    <img src="./assets/logo.png" class="logo" />
+                </a>
+
+                <!-- will be set via PyDom -->
+                <a class="title" id="page-title" href="" style="color: #f0ab3c"></a>
+            </div>
+        </nav>
+
+        <br />
+        
+        <!-- will be set via PyDom -->
+        <div id="page-message"></div>
+
+        <div id="pandas-source">
+            <h3>Data Source</h3>
+            <input type="text" id="txt-url" class="py-input" size="70" />
+            <button
+                type="submit"
+                id="btn-load"
+                class="py-button"
+                py-click="loadFromURL"
+            >
+                Load CSV
+            </button>
+        </div>
+
+        <div id="pandas-output" hidden>
+            <h3>Output</h3>
+            <div id="pandas-output-inner"></div>
+        </div>
+
+        <div id="pandas-dev-console" hidden>
+            <h3>Dev Console</h3>
+            <script type="py" terminal></script>
+        </div>
+
+        <section class="pyscript">
+            <script type="py" src="./main.py" config="./pyscript.toml"></script>
+        </section>
+
+    </body>
+</html>
