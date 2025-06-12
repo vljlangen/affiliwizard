@@ -1,38 +1,56 @@
-import pandas as pd
-from pyweb import pydom
-from pyodide.http import open_url
-from pyscript import display
-from js import console
+import re
+from pyscript import when
+from js import document
 
-title = "Pandas (and basic DOM manipulation)"
-page_message = "This example loads a remote CSV file into a Pandas dataframe, and displays it."
-url = "https://raw.githubusercontent.com/datasets/airport-codes/master/data/airport-codes.csv"
+def parse_data(raw_text):
+    lines = [line.strip() for line in raw_text.strip().split('\n') if line.strip()]
+    affil_map = {}
+    affil_list = []
+    affil_counter = 1
+    author_affils = []
+    for line in lines:
+        cols = re.split(r'\t+', line)
+        if not cols or not cols[0]:
+            continue
+        author = cols[0].strip()
+        affils = [a.strip() for a in cols[1:] if a.strip()]
+        affil_nums = []
+        for affil in affils:
+            if affil not in affil_map:
+                affil_map[affil] = affil_counter
+                affil_list.append(affil)
+                affil_counter += 1
+            affil_nums.append(affil_map[affil])
+        author_affils.append((author, affil_nums))
+    return author_affils, affil_list, affil_map
 
-pydom["title#header-title"].html = title
-pydom["a#page-title"].html = title
-pydom["div#page-message"].html = page_message
-pydom["input#txt-url"][0].value = url
+def to_superscript_seq(seq):
+    SUPERSCRIPTS = {
+        '0': '\u2070', '1': '\u00b9', '2': '\u00b2', '3': '\u00b3',
+        '4': '\u2074', '5': '\u2075', '6': '\u2076', '7': '\u2077', '8': '\u2078', '9': '\u2079', ',': ','
+    }
+    return ''.join(SUPERSCRIPTS.get(ch, ch) for ch in seq)
 
-def log(message):
-    # log to pandas dev console
-    print(message)
-    # log to JS console
-    console.log(message)
+def format_block(author_affils, affil_list, affil_map):
+    author_line = []
+    for author, nums in author_affils:
+        sorted_nums = sorted(nums)
+        num_seq = ','.join(str(n) for n in sorted_nums)
+        supers = to_superscript_seq(num_seq)
+        author_line.append(f"{author}{supers}")
+    author_line_str = ', '.join(author_line)
+    affil_lines = [f"{affil_map[affil]}. {affil}" for affil in affil_list]
+    return f"{author_line_str}\n\n" + '\n'.join(affil_lines)
 
-def loadFromURL(event):
-    pydom["div#pandas-output-inner"].html = ""
-    url = pydom["input#txt-url"][0].value
-
-    log(f"Trying to fetch CSV from {url}")
-    df = pd.read_csv(open_url(url))
-
-    pydom["div#pandas-output"].style["display"] = "block"
-    pydom["div#pandas-dev-console"].style["display"] = "block"
-
-    display(df, target="pandas-output-inner", append="False")
-
-def process_author_info(event=None):
-    author_info = pydom["textarea#author-info"][0].value
-    pydom["div#author-output"].html = f"<pre>{author_info}</pre>"
-
-pydom["button#process-btn"].on("click", process_author_info)
+@when("click", "#process-btn")
+def process_author_info(event):
+    raw_text = document.querySelector("#author-info").value
+    if not raw_text.strip():
+        document.querySelector("#author-output").innerHTML = "<p style='color: red;'>Please paste author-affiliation data first.</p>"
+        return
+    try:
+        author_affils, affil_list, affil_map = parse_data(raw_text)
+        output = format_block(author_affils, affil_list, affil_map)
+        document.querySelector("#author-output").innerHTML = f"<pre>{output}</pre>"
+    except Exception as e:
+        document.querySelector("#author-output").innerHTML = f"<p style='color: red;'>Error: {e}</p>"

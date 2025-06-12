@@ -1,73 +1,27 @@
-<!doctype html>
-
+<!DOCTYPE html>
 <html>
-    <head>
-        <!-- Recommended meta tags -->
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PyScript Example</title>
 
-        <!-- PyScript CSS -->
-        <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
-        <!-- CSS for examples -->
-        <link rel="stylesheet" href="./assets/css/examples.css" />
+    <!-- PyScript CSS & JS -->
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css" />
+    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+</head>
 
-        <!-- This script tag bootstraps PyScript -->
-        <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+<body>
+    <h2>Enter text and display it</h2>
 
-        <!-- for splashscreen -->
-        <style>
-            #loading { outline: none; border: none; background: transparent }
-        </style>
-        <script type="module">
-            const loading = document.getElementById('loading');
-            addEventListener('py:ready', () => loading.close());
-            loading.showModal();
-        </script>
+    <!-- Text area and button -->
+    <textarea id="author-info" rows="4" cols="50" placeholder="Type something..."></textarea><br>
+    <button id="process-btn">Show Text</button>
 
-        <!-- will be set via PyDom -->
-        <title id="header-title"></title>
-        <link rel="icon" type="image/png" href="./assets/favicon.png" />
-    </head>
+    <!-- Output area -->
+    <h3>Output:</h3>
+    <div id="author-output" style="margin-top: 10px; border: 1px solid #ccc; padding: 10px;"></div>
 
-    <body>
-        <dialog id="loading">
-            <h1>Loading...</h1>
-        </dialog>
-
-        <nav class="navbar" style="background-color: #000000">
-            <div class="app-header">
-                <a href="/">
-                    <img src="./assets/logo.png" class="logo" />
-                </a>
-
-                <!-- will be set via PyDom -->
-                <a class="title" id="page-title" href="" style="color: #f0ab3c"></a>
-            </div>
-        </nav>
-
-        <br />
-        
-        <!-- will be set via PyDom -->
-        <div id="page-message"></div>
-
-        <div id="author-input-section">
-            <h3>Paste Author Info</h3>
-            <textarea id="author-info" rows="6" cols="70" placeholder="Paste your author-affiliation data here..."></textarea><br>
-            <button id="process-btn">Process Author Info</button>
-        </div>
-        <div id="author-output-section">
-            <h3>Output</h3>
-            <div id="author-output"></div>
-        </div>
-
-        <div id="pandas-dev-console" hidden>
-            <h3>Dev Console</h3>
-            <script type="py" terminal></script>
-        </div>
-
-        <section class="pyscript">
-            <script type="py" src="./main.py" config="./pyscript.toml"></script>
-        </section>
-
-    </body>
+    <!-- PyScript runs this -->
+    <script type="py" src="main.py"></script>
+</body>
 </html>
