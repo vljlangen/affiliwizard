@@ -18,14 +18,14 @@
     <div id="output"></div>
 
     <py-script>
-from pyscript import Element
+    from pyscript import Element
 
-def greet():
-    name = Element("name").value
-    if name.strip():
-        Element("output").write(f"Hello, {name}!")
-    else:
-        Element("output").write("Hello, World!")
+    def greet():
+        name = Element("name").value
+        if name.strip():
+            Element("output").write(f"Hello, {name}!")
+        else:
+            Element("output").write("Hello, World!")
     </py-script>
 </body>
 </html> 
