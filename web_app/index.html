@@ -1,31 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>AffiliWizard PyScript Demo</title>
-    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
-    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 2em; }
-        #output { margin-top: 1em; color: green; font-weight: bold; }
-    </style>
-</head>
-<body>
-    <h1>AffiliWizard PyScript Demo</h1>
-    <p>This is a Hello World example using PyScript.</p>
-    <input id="name" type="text" placeholder="Enter your name" />
-    <button py-click="greet()">Greet</button>
-    <div id="output"></div>
-
-    <py-script>
-    from pyscript import Element
-
-    def greet():
-        name = Element("name").value
-        if name.strip():
-            Element("output").write(f"Hello, {name}!")
-        else:
-            Element("output").write("Hello, World!")
-    </py-script>
-</body>
-</html> 
+<!doctype html>
+<html>
+    <head>
+        <!-- Recommended meta tags -->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <!-- PyScript CSS -->
+        <link rel="stylesheet" href="https://pyscript.net/releases/2024.2.1/core.css">
+        <!-- This script tag bootstraps PyScript -->
+        <script type="mpy" src="main.py"></script>
+    </head>
+    <body>
+        <py-script>
+            import sys
+            from pyscript import display
+            
+            
+            display(sys.version)
+            </py-script>
+            
+    </body>
+</html>
