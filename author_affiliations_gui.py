@@ -3,6 +3,7 @@ from tkinter import filedialog, messagebox, scrolledtext
 from docx import Document
 import re
 from docx.oxml.ns import qn
+from openpyxl import Workbook
 
 # Superscript mapping for 1-9
 SUPERSCRIPTS = {
@@ -44,16 +45,24 @@ def parse_data(raw_text):
         author_affils.append((author, affil_nums))
     return author_affils, affil_list, affil_map
 
-def format_block(author_affils, affil_list, affil_map):
-    # Author line with all superscript numbers and commas
+def format_block(author_affils, affil_list, affil_map, plain_text=False):
+    # Author line with all superscript numbers and commas (default)
     author_line = []
     for author, nums in author_affils:
-        num_seq = ','.join(str(n) for n in nums)
-        supers = to_superscript_seq(num_seq)
-        author_line.append(f"{author}{supers}")
+        sorted_nums = sorted(nums)
+        num_seq = ','.join(str(n) for n in sorted_nums)
+        if plain_text:
+            # Use (1,2) format for plain text
+            author_line.append(f"{author} ({num_seq})" if num_seq else author)
+        else:
+            supers = to_superscript_seq(num_seq)
+            author_line.append(f"{author}{supers}")
     author_line_str = ', '.join(author_line)
-    # Affiliation list with plain numbers
-    affil_lines = [f"{affil_map[affil]} {affil}" for affil in affil_list]
+    # Affiliation list
+    if plain_text:
+        affil_lines = [f"{affil_map[affil]}. {affil}" for affil in affil_list]
+    else:
+        affil_lines = [f"{affil_map[affil]} {affil}" for affil in affil_list]
     return f"{author_line_str}\n\n" + '\n'.join(affil_lines)
 
 def create_new_docx(docx_path, author_affils, affil_list, affil_map):
@@ -66,11 +75,12 @@ def create_new_docx(docx_path, author_affils, affil_list, affil_map):
     # Author line with true superscript for numbers/commas
     p = doc.add_paragraph()
     for idx, (author, nums) in enumerate(author_affils):
+        sorted_nums = sorted(nums)
         run = p.add_run(author)
         run.font.name = 'Arial'
         run._element.rPr.rFonts.set(qn('w:eastAsia'), 'Arial')
-        if nums:
-            num_seq = ','.join(str(n) for n in nums)
+        if sorted_nums:
+            num_seq = ','.join(str(n) for n in sorted_nums)
             sup_run = p.add_run(num_seq)
             sup_run.font.superscript = True
             sup_run.font.name = 'Arial'
@@ -80,7 +90,7 @@ def create_new_docx(docx_path, author_affils, affil_list, affil_map):
             comma_run.font.name = 'Arial'
             comma_run._element.rPr.rFonts.set(qn('w:eastAsia'), 'Arial')
     doc.add_paragraph("")  # Blank line
-    # Affiliation list with plain numbers and period after digit
+    # Affiliation list with numbers and period after digit
     for affil in affil_list:
         para = doc.add_paragraph(f"{affil_map[affil]}. {affil}")
         for run in para.runs:
@@ -88,14 +98,74 @@ def create_new_docx(docx_path, author_affils, affil_list, affil_map):
             run._element.rPr.rFonts.set(qn('w:eastAsia'), 'Arial')
     doc.save(docx_path)
 
+def create_new_html(html_path, author_affils, affil_list, affil_map):
+    def html_superscript(seq):
+        # Converts a string like '1,2' to HTML superscript: <sup>1,2</sup>
+        return f"<sup>{seq}</sup>" if seq else ""
+
+    # Author line with superscript numbers/commas
+    author_line = []
+    for author, nums in author_affils:
+        sorted_nums = sorted(nums)
+        num_seq = ','.join(str(n) for n in sorted_nums)
+        supers = html_superscript(num_seq)
+        author_line.append(f"{author}{supers}")
+    author_line_str = ', '.join(author_line)
+    # Affiliation list with numbers and period after digit
+    affil_lines = [f"{affil_map[affil]}. {affil}" for affil in affil_list]
+    affil_html = '<br>\n'.join(affil_lines)
+    html = f"""<html>
+<head>
+<meta charset='utf-8'>
+<title>Author Affiliations</title>
+<style>
+body {{ font-family: Arial, sans-serif; }}
+</style>
+</head>
+<body>
+<p>{author_line_str}</p>
+<br>
+<p>{affil_html}</p>
+</body>
+</html>"""
+    with open(html_path, 'w', encoding='utf-8') as f:
+        f.write(html)
+
+def create_new_txt(txt_path, author_affils, affil_list, affil_map):
+    text = format_block(author_affils, affil_list, affil_map, plain_text=True)
+    with open(txt_path, 'w', encoding='utf-8') as f:
+        f.write(text)
+
 class AuthorAffiliationsApp:
     def __init__(self, root):
         self.root = root
-        root.title("Author Affiliations Docx Creator")
+        root.title("Author Affiliations File Creator")
+        usage_text = (
+            "How to use:\n\n"
+
+            "1. Paste your author-affiliation data from Excel to the text box below.\n"
+            "2. Then use the buttons below to export author-affiliation data to .docx, .html, or .txt\n\n"
+
+            "Format instructions for the Excel file:\n\n"
+            "- Each line: Author Name [tab] Affiliation 1 [tab] Affiliation 2 ...\n"
+            "- Practical example:\n\n"
+            "John Doe\tBogus Institute, CA, USA\tExample Institute, TS, USA\n\n"
+
+            "Download an Excel example file below if needed.\n\n"           
+
+        )
+        self.usage_label = tk.Label(root, text=usage_text, justify="left", anchor="w", fg="blue")
+        self.usage_label.pack(padx=10, pady=(10,0), anchor="w")
         self.text = scrolledtext.ScrolledText(root, width=80, height=20)
         self.text.pack(padx=10, pady=10)
         self.create_btn = tk.Button(root, text="Create .docx File", command=self.process)
         self.create_btn.pack(pady=10)
+        self.create_html_btn = tk.Button(root, text="Create HTML File", command=self.process_html)
+        self.create_html_btn.pack(pady=5)
+        self.create_txt_btn = tk.Button(root, text="Create Plain Text File", command=self.process_txt)
+        self.create_txt_btn.pack(pady=5)
+        self.example_excel_btn = tk.Button(root, text="Download Example Excel File", command=self.download_example_excel)
+        self.example_excel_btn.pack(pady=5)
 
     def process(self):
         raw_text = self.text.get("1.0", tk.END)
@@ -111,6 +181,55 @@ class AuthorAffiliationsApp:
             messagebox.showinfo("Success", f"New .docx file created at:\n{save_path}")
         except Exception as e:
             messagebox.showerror("Error", str(e))
+
+    def process_html(self):
+        raw_text = self.text.get("1.0", tk.END)
+        if not raw_text.strip():
+            messagebox.showerror("Error", "Please paste author-affiliation data.")
+            return
+        try:
+            author_affils, affil_list, affil_map = parse_data(raw_text)
+            save_path = filedialog.asksaveasfilename(defaultextension=".html", filetypes=[("HTML Files", "*.html")], title="Save new HTML file")
+            if not save_path:
+                return
+            create_new_html(save_path, author_affils, affil_list, affil_map)
+            messagebox.showinfo("Success", f"New HTML file created at:\n{save_path}")
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+
+    def process_txt(self):
+        raw_text = self.text.get("1.0", tk.END)
+        if not raw_text.strip():
+            messagebox.showerror("Error", "Please paste author-affiliation data.")
+            return
+        try:
+            author_affils, affil_list, affil_map = parse_data(raw_text)
+            save_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")], title="Save new text file")
+            if not save_path:
+                return
+            create_new_txt(save_path, author_affils, affil_list, affil_map)
+            messagebox.showinfo("Success", f"New text file created at:\n{save_path}")
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+
+    def download_example_excel(self):
+        save_path = filedialog.asksaveasfilename(defaultextension=".xlsx", filetypes=[("Excel Files", "*.xlsx")], title="Save example Excel file")
+        if not save_path:
+            return
+        try:
+            create_example_excel(save_path)
+            messagebox.showinfo("Success", f"Example Excel file saved at:\n{save_path}")
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+
+# Helper to create an example Excel file
+def create_example_excel(xlsx_path):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Authors"
+    ws.append(["John Doe, MD", "Bogus Institute, CA, USA", "Example Institute, TS, USA"])
+    ws.append(["Jane Doe, MD", "Sample University, TX, USA"])
+    wb.save(xlsx_path)
 
 def main():
     root = tk.Tk()
