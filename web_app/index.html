@@ -47,13 +47,13 @@
             <button id="greet-btn">Greet</button>
             <div id="output"></div>
             <script type="py">
-import pyscript
+from js import document
 
 def greet(event=None):
-    name = pyscript.get("name").value
-    pyscript.write("output", f"Hello, {name}!")
+    name = document.getElementById("name").value
+    document.getElementById("output").innerText = f"Hello, {name}!"
 
-pyscript.get("greet-btn").onclick = greet
+document.getElementById("greet-btn").addEventListener("click", greet)
             </script>
         </section>
     </body>
