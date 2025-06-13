@@ -31,12 +31,48 @@
             padding: 1rem;
             background-color: #f9f9f9;
         }
+        .excel-sim table {
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+        .excel-sim td {
+            border: 1px solid #ccc;
+            padding: 0.5rem;
+            font-family: monospace;
+        }
+        footer {
+            margin-top: 3rem;
+            font-size: 0.9rem;
+            color: #555;
+            border-top: 1px solid #ddd;
+            padding-top: 1rem;
+        }
     </style>
 </head>
 
 <body>
     <h2>AffiliWizard Web</h2>
-    <p>Paste your author-affiliation data (tab-separated):</p>
+
+    <h3>Instructions</h3>
+    <p>1. Prepare your author–affiliation data in Excel or a similar tool. Each cell should represent one piece of information, with each column separated by a tab (⇥):</p>
+
+    <div class="excel-sim">
+        <table>
+            <tr>
+                <td>John Doe, MD</td>
+                <td>Bogus Institute, CA, USA</td>
+                <td>Sample University, TX, USA</td>
+            </tr>
+            <tr>
+                <td>Jane Doe, MD</td>
+                <td>Example Institute, TS, USA</td>
+                <td>Sample University, TX, USA</td>
+                <td>Bogus Institute, CA, USA</td>
+            </tr>
+        </table>
+    </div>
+
+    <p>2. Copy and paste your tab-separated data below:</p>
 
     <!-- Text area -->
     <textarea id="author-info" rows="10" placeholder="e.g.&#10;John Doe, MD[TAB]Institute 1[TAB]Institute 2"></textarea>
@@ -46,12 +82,19 @@
         <button id="process-btn">Show Formatted HTML</button>
         <button id="export-html-btn">Export HTML File</button>
         <button id="show-plain-btn">Show Plain Text</button>
-        <button id="export-plain-btn">Export Plain Text File</button> <!-- NEW -->
+        <button id="export-plain-btn">Export Plain Text File</button>
     </div>
 
     <!-- Output area -->
     <h3>Output:</h3>
     <div id="author-output"></div>
+
+    <!-- Footer -->
+    <footer>
+        <p><strong>MIT License.</strong> Copyright © 2025 Ville Langén.</p>
+        <p><em>TL;DR:</em> MIT License means you can use this freely. Credit me if you reuse the code — but if you just use the output (e.g. in a paper), no credit is needed. Just don’t sue me, use it at your own risk.</p>
+        <p>Source code: <a href="https://github.com/vljlangen/affiliwizard" target="_blank">https://github.com/vljlangen/affiliwizard</a></p>
+    </footer>
 
     <!-- PyScript logic -->
     <script type="py" src="main.py"></script>
