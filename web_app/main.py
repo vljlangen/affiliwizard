@@ -1,26 +1,19 @@
 from pyscript import when
 from js import document, Blob, URL
 
-# Mapping digits to superscript unicode
-SUPERSCRIPTS = {
-    '0': '\u2070', '1': '\u00b9', '2': '\u00b2', '3': '\u00b3',
-    '4': '\u2074', '5': '\u2075', '6': '\u2076', '7': '\u2077',
-    '8': '\u2078', '9': '\u2079', ',': ','
-}
+import re
 
-def to_superscript_seq(seq):
-    return ''.join(SUPERSCRIPTS.get(ch, ch) for ch in seq)
-
+# Parse the raw tab-separated text
 def parse_data(raw_text):
     lines = [line.strip() for line in raw_text.strip().split('\n') if line.strip()]
-    author_affils = []
     affil_map = {}
     affil_list = []
     affil_counter = 1
+    author_affils = []
 
     for line in lines:
-        parts = line.split('\t')
-        if not parts:
+        parts = re.split(r'\t+', line)
+        if not parts or not parts[0]:
             continue
         author = parts[0].strip()
         affils = [a.strip() for a in parts[1:] if a.strip()]
@@ -35,42 +28,71 @@ def parse_data(raw_text):
 
     return author_affils, affil_list, affil_map
 
-def generate_html(author_affils, affil_list, affil_map):
-    # Author line with superscripts
-    authors = []
-    for name, nums in author_affils:
-        num_seq = ','.join(str(n) for n in sorted(nums))
-        supers = f"<sup>{num_seq}</sup>" if num_seq else ""
-        authors.append(f"{name}{supers}")
-    author_line = ', '.join(authors)
+def format_plain_text(author_affils, affil_list, affil_map):
+    # One line of authors, like: John Doe (1,2), Jane Smith (3)
+    author_line = []
+    for author, nums in author_affils:
+        affil_str = f" ({','.join(str(n) for n in sorted(nums))})" if nums else ""
+        author_line.append(f"{author}{affil_str}")
+    author_line_str = ', '.join(author_line)
+    
+    # Affiliation lines
+    affil_lines = [f"{affil_map[affil]}. {affil}" for affil in affil_list]
+    return f"{author_line_str}\n\n" + '\n'.join(affil_lines)
 
-    # Affiliation list
-    affil_lines = [f"{affil_map[a]}. {a}" for a in affil_list]
-    affil_html = '<br>'.join(affil_lines)
 
-    return f"<p>{author_line}</p><br><p>{affil_html}</p>"
+# Format as HTML
+def format_html(author_affils, affil_list, affil_map):
+    lines = []
+    for author, nums in author_affils:
+        affil_str = f"<sup>{','.join(str(n) for n in sorted(nums))}</sup>" if nums else ""
+        lines.append(f"{author}{affil_str}")
+    author_line = ", ".join(lines)
+    affil_lines = "<br>\n".join([f"{affil_map[affil]}. {affil}" for affil in affil_list])
+    return f"<p>{author_line}</p><br><p>{affil_lines}</p>"
 
+# Display HTML in output div
 @when("click", "#process-btn")
-def handle_show_text(event):
+def show_html(event):
     raw_text = document.querySelector("#author-info").value
     author_affils, affil_list, affil_map = parse_data(raw_text)
-    output_html = generate_html(author_affils, affil_list, affil_map)
-    document.querySelector("#author-output").innerHTML = output_html
+    html = format_html(author_affils, affil_list, affil_map)
+    document.querySelector("#author-output").innerHTML = html
 
-@when("click", "#export-html")
-def handle_export_html(event):
+# Show plain text in output
+@when("click", "#show-plain-btn")
+def show_plain_text(event):
     raw_text = document.querySelector("#author-info").value
     author_affils, affil_list, affil_map = parse_data(raw_text)
-    body = generate_html(author_affils, affil_list, affil_map)
+    plain = format_plain_text(author_affils, affil_list, affil_map)
+    document.querySelector("#author-output").innerText = plain
 
-    html = f"""<!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>Exported Author Info</title></head>
-<body>{body}</body></html>
-"""
+# Export HTML
+@when("click", "#export-html-btn")
+def export_html(event):
+    raw_text = document.querySelector("#author-info").value
+    author_affils, affil_list, affil_map = parse_data(raw_text)
+    html = "<html><body>" + format_html(author_affils, affil_list, affil_map) + "</body></html>"
+
     blob = Blob.new([html], { "type": "text/html" })
     url = URL.createObjectURL(blob)
+
     link = document.createElement("a")
     link.href = url
     link.download = "author_affiliations.html"
     link.click()
-    URL.revokeObjectURL(url)
+
+# Export plain text
+@when("click", "#export-plain-btn")
+def export_plain(event):
+    raw_text = document.querySelector("#author-info").value
+    author_affils, affil_list, affil_map = parse_data(raw_text)
+    text = format_plain_text(author_affils, affil_list, affil_map)
+
+    blob = Blob.new([text], { "type": "text/plain" })
+    url = URL.createObjectURL(blob)
+
+    link = document.createElement("a")
+    link.href = url
+    link.download = "author_affiliations.txt"
+    link.click()

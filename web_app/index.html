@@ -3,26 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PyScript Example</title>
+    <title>AffiliWizard Web</title>
 
     <!-- PyScript CSS & JS -->
     <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css" />
     <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2rem;
+        }
+        textarea {
+            width: 100%;
+            font-family: monospace;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        button {
+            margin: 0.2rem;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+        }
+        #author-output {
+            margin-top: 1.5rem;
+            border: 1px solid #ccc;
+            padding: 1rem;
+            background-color: #f9f9f9;
+        }
+    </style>
 </head>
 
 <body>
-    <h2>Enter text and display it</h2>
+    <h2>AffiliWizard Web</h2>
+    <p>Paste your author-affiliation data (tab-separated):</p>
 
-    <!-- Text area and buttons -->
-    <textarea id="author-info" rows="4" cols="50" placeholder="Type something..."></textarea><br>
-    <button id="process-btn">Show Text</button>
-    <button id="export-html">Export as HTML</button>
+    <!-- Text area -->
+    <textarea id="author-info" rows="10" placeholder="e.g.&#10;John Doe, MD[TAB]Institute 1[TAB]Institute 2"></textarea>
+
+    <!-- Buttons -->
+    <div>
+        <button id="process-btn">Show Formatted HTML</button>
+        <button id="export-html-btn">Export HTML File</button>
+        <button id="show-plain-btn">Show Plain Text</button>
+        <button id="export-plain-btn">Export Plain Text File</button> <!-- NEW -->
+    </div>
 
     <!-- Output area -->
     <h3>Output:</h3>
-    <div id="author-output" style="margin-top: 10px; border: 1px solid #ccc; padding: 10px;"></div>
+    <div id="author-output"></div>
 
-    <!-- PyScript runs this -->
+    <!-- PyScript logic -->
     <script type="py" src="main.py"></script>
 </body>
 </html>
