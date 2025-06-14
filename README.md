@@ -52,7 +52,7 @@ If you are using Linux and want to run AffiliWizard natively, you can build it f
 
    ```bash
    pip install pyinstaller
-   pyinstaller --onefile --windowed --icon=favicon.ico AffiliWizard.py
+   pyinstaller --onefile --windowed --icon=app_icon.ico AffiliWizard.py
    ```
 
    This will generate an executable in the `dist/` folder.

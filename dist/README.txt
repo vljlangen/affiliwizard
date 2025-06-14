@@ -28,7 +28,7 @@ Linux users can build their own executable by cloning the repository and running
   python3 -m venv venv
   source venv/bin/activate
   pip install -r requirements.txt
-  pyinstaller --onefile --windowed --icon=favicon.ico AffiliWizard.py
+  pyinstaller --onefile --windowed --icon=app_icon.ico AffiliWizard.py
 
 License:
 MIT License - Free to use and modify. Please credit the author if the code is reused. No need to credit if only used for writing a paper.
