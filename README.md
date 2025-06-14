@@ -17,9 +17,8 @@ A GUI tool to format author-affiliation lists and export them to `.docx`, `.html
 | John Doe, MD | Bogus Institute, CA, USA    | Example Institute, TS, USA  |
 | Jane Doe, MD | Sample University, TX, USA  |                             |
 
----
 
-**Sample output (HTML format):**
+### Sample output (HTML format):
 
 John Doe, MD<sup>1,2</sup>, Jane Doe, MD<sup>3</sup>
 
