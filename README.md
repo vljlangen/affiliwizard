@@ -19,6 +19,16 @@ A GUI tool to format author-affiliation lists and export them to `.docx`, `.html
 
 ---
 
+**Sample output (HTML format):**
+
+John Doe, MD<sup>1,2</sup>, Jane Doe, MD<sup>3</sup>
+
+1. Bogus Institute, CA, USA  
+2. Example Institute, TS, USA  
+3. Sample University, TX, USA
+
+---
+
 ## Files included in the `dist/` folder
 
 - `AffiliWizard-macOS-arm64.dmg` — macOS Apple Silicon installer  
