@@ -22,33 +22,16 @@ Files included:
 If your platform is not supported, you can always use the online version at:
 https://affiliwizard.netlify.app/
 
-Build on Linux
---------------
+Building for Linux:
+Linux users can build their own executable by cloning the repository and running:
 
-If you’re using Linux and want to run AffiliWizard natively, you can build it from source:
-
-1. Make sure you have Python 3 installed (recommended 3.8+).
-2. Install required Python packages (you can use a virtual environment):
-
-`python3 -m venv venv`
-`source venv/bin/activate`
-`pip install -r requirements.txt`
-
-3. Run the application directly with:
-
-`python author_affiliations_gui.py`
-
-4. (Optional) To create a standalone executable, you can use PyInstaller:
-
-`pip install pyinstaller`
-`pyinstaller --onefile --windowed --icon=favicon.ico author_affiliations_gui.py`
-
-This will generate an executable in the `dist/` folder.
-
-Note: Because Linux distributions vary, pre-built binaries are not provided, but building from source is straightforward.
+  python3 -m venv venv
+  source venv/bin/activate
+  pip install -r requirements.txt
+  pyinstaller --onefile --windowed --icon=favicon.ico AffiliWizard.py
 
 License:
-MIT License - Free to use and modify. Please credit the author.
+MIT License - Free to use and modify. Please credit the author if the code is reused. No need to credit if only used for writing a paper.
 
 Source code & support:
 https://github.com/vljlangen/affiliwizard

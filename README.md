@@ -45,14 +45,14 @@ If you are using Linux and want to run AffiliWizard natively, you can build it f
 3. Run the application directly with:
 
    ```bash
-   python author_affiliations_gui.py
+   python AffiliWizard.py
    ```
 
 4. (Optional) To create a standalone executable using PyInstaller:
 
    ```bash
    pip install pyinstaller
-   pyinstaller --onefile --windowed --icon=favicon.ico author_affiliations_gui.py
+   pyinstaller --onefile --windowed --icon=favicon.ico AffiliWizard.py
    ```
 
    This will generate an executable in the `dist/` folder.
@@ -63,7 +63,8 @@ If you are using Linux and want to run AffiliWizard natively, you can build it f
 
 ## License
 
-MIT License — free to use and modify. Please credit the author.
+MIT License - free to use and modify. Please credit the author if you reuse the code.
+If you just use AffiliWizard to format your author-affiliation list for a paper, no need to credit.
 
 ---
 
