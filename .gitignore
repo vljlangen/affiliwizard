@@ -15,7 +15,7 @@ ENV/
 .venv/
 build/
 develop-eggs/
-dist/
+dist_temp/
 downloads/
 eggs/
 .eggs/
